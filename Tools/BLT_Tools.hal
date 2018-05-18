@@ -1,0 +1,38 @@
+global
+function boolean BLT_ChcekINrsCustomer(string filename, longint sernr, string customer)
+begin
+  record IVVc IVr;
+  record SHVc SHr;
+  record RetVc Retr;
+  boolean res;
+
+  if filename == "IVVc" then begin
+    IVr.SerNr = sernr;
+    if ReadFirstMain(IVr,1,true) then begin
+      if IVr.CustCode == customer then begin
+        res = true;
+      end;
+    end;
+  end;
+
+  if filename == "SHVc" then begin
+    SHr.SerNr = sernr;
+    if ReadFirstMain(SHr,1,true) then begin
+      if SHr.CustCode == customer then begin
+        res = true;
+      end;
+    end;
+  end;
+
+  if filename == "RetVc" then begin
+    Retr.SerNr = sernr;
+    if ReadFirstMain(Retr,1,true) then begin
+      if Retr.CustCode == customer then begin
+        res = true;
+      end;
+    end;
+  end;
+
+  BLT_ChcekINrsCustomer = res;
+  return;
+end;

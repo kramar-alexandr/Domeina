@@ -1,0 +1,186 @@
+external inner function Boolean HasPreferedOfficialSerNr();
+external inner function Boolean HasInvoiceOfficialSerNr();
+external inner function Boolean HasCategories();
+external inner function Boolean HasContactClassification();
+external inner function Boolean HasModSO();
+external inner function Boolean HasModQT();
+external inner function Boolean HasModPOS();
+external inner function Boolean HasAdvancedCRM();
+external inner function Boolean HasModCheck();
+external inner function Boolean HasModCO();
+external inner function Boolean HasLimitedAccess();
+external inner function Boolean AcceptanceStatusColumnTest(string);
+external inner function Boolean HasCustomerStatusReport();
+external inner function Boolean HasFreightAdvanced();
+external inner function Boolean UseTaxTemplatesforTaxCalc();
+external inner function real VATZoneButtonsLabelsLAT(real,real,real,real);
+external inner function Boolean HasBuyBack();
+external inner function Boolean HasStandardCRM();
+external inner function Boolean HasEMail();
+external inner function Boolean HasAdvancedProduction();
+external inner function Boolean HasDownpayments();
+external inner function Boolean HasSalesman();
+external inner function Boolean HasVATZone();
+external inner function Boolean HasSalesmanBonus();
+external inner function Boolean HasSalesGroup();
+external inner function Boolean HasAdvancedPricing();
+external inner function Boolean HasModSVO();
+external inner function Boolean HasWithholdingTax();
+external inner function Boolean HasItemGroups();
+external inner function Boolean HasConsStockMoveInvoices();
+external inner function Boolean HasIntegratedNL();
+external inner function string 60 UserDefined(string,string);
+external inner function string 255 VATZoneNameLAT();
+external inner function Boolean HasModCRM();
+external inner function Boolean HasPersons();
+external inner function Boolean HasModWHM();
+external inner function Boolean HasETaxDocuments();
+external inner function Boolean HasReturnedGoods();
+external inner function Boolean HasModNL();
+external inner function Boolean HasNumberSeries();
+external inner function Boolean HasCountryPerCustomer();
+external inner function Boolean HasPositions();
+external inner function Boolean HasSerialNumbers();
+external inner function Boolean HasCustItem();
+external inner function Boolean HasLanguages();
+external inner function Boolean HasModTS();
+external inner function Boolean HasBranch();
+external inner function Boolean HasObjects();
+external inner function Boolean HasRoute();
+external inner function Boolean HasOfficialSerNr();
+external inner function Boolean HasTREO();
+external inner function Boolean IsEnterprise();
+external inner function Boolean StandardHansa();
+external inner function Boolean HasModIN();
+external inner function Boolean HasModSL();
+external inner function Boolean HasMultiLocations();
+external inner function Boolean HasModPO();
+external inner function Boolean HasMultiCurrency();
+external inner function Boolean HasVarieties();
+external inner function Boolean HasBase2();
+external inner function Boolean HasApprovals();
+external inner function Boolean HasModPL();
+external inner function Boolean HasRetGoodsToSupp();
+external inner function Boolean HasTaxMatrix();
+external inner function Boolean HasQualityControl();
+external inner function Boolean HasAdvancedStock();
+external inner function Boolean HasModRent();
+external inner function Boolean HasExtTax();
+external inner function Boolean HasModProd();
+external inner function Boolean HasThrouLocation();
+external inner function Boolean HasDepartments();
+external inner function Boolean HasSecondQuantity();
+
+external inner function Boolean HasJewelleryInterface();
+external inner function Boolean HasCharts();
+external inner function Boolean HasItemClassification();
+external inner function string 255 VATZoneEditFieldLabelLAT(Integer);
+external inner procedure RateField(real,real,real,string,integer,string,boolean,real,real,string,boolean);
+
+SetLangMode(LangLatvian,"LAT",2);
+
+window INrsRClass:1
+  wtag("language","LAT"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,h4,v,vm,vs;
+  WindowBegin("Artikulu kustību pārskats",INrsRClass,CGRcW,RcType);
+  SetWRect(20,80,550,460);
+  v = 6; vs = 20; h = 160; h2 = 30; h3 = 180; h4 = 340;
+  PeriodField(h,v,"Periods");
+  EditFieldTL(h,v+=vs,150,"Artikula Nr.",M4UStr,Normal,50,f1,false,INSClass);
+  if (HasItemGroups) then begin
+  EditFieldTL(h,v+=vs,150,"Grupa",M4UStr,Normal,5,f3,false,ITSClass);
+  end;
+  if (HasItemClassification) then begin
+  EditFieldTL(h,v+=vs,150,"Artikula klasifikācija", M4UStr,Normal,60,f4,false,DISClass);
+  EditFieldTL(h,v+=vs,150,"Klasifikācijas tips",M4UStr,Normal,60,f5,false,CTypeSClass);
+  end;
+  if (HasMultiLocations) then begin
+  EditFieldTL(h,v+=vs,150,"Noliktava",M4Code,Normal,21,f6,false,LocationSClass);
+    if (StandardHansa==false and IsEnterprise) then begin
+  EditFieldTL(h,v+=vs,150,"Noliktavas grupa",M4Code,Normal,10,f7,false,LocGrSClass);
+  EditFieldTL(h,v+=vs,150,"Noliktavas klasifikācija",M4List,Normal,200,f8,false,LocClSClass);
+    end;
+  end;
+  if (HasDepartments) then begin
+  EditFieldTL(h,v+=vs,150,"Departaments",M4UStr,Normal,10,AccStr,false,DepSClass);
+  end;
+  if (HasModPO) then begin
+  EditFieldTL(h,v+=vs,150,"Piegādātājs",M4UStr,Normal,10,f2,false,VESClass);
+  end;
+  EditFieldTL(h,v+=vs ,150,"Klients",M4UStr,Normal,50,f12,false,CUSClass);
+  if (IsEnterprise) then begin
+  CheckBox(h2,v+=26,0,"Tikai noliktavas artikuli",flags[11]);
+//  CheckBox(h2,v+=16,0,"Rādīt otro daudzuma vienību",flags[12]);
+  CheckBox(h2,v+=16,0,"Saldo artikuliem bez kustības",flags[13]);
+  CheckBox(h2,v+=16,0,"Iekļaut sagatavotos ierakstus",flags[14]);
+  end;
+  if (HasMultiLocations) then begin
+  CheckBox(h2,v+=16,0,"Pa noliktavām",flags[15]);
+  end;
+  if (HasSerialNumbers) then begin
+  CheckBox(h2,v+=16,0,"Iekļaut Sēr. Nr. inform.",AccSpec);
+  end;
+  if (HasLocalization("ARG,MEX,USA") and IsStandardProduct==false) then begin
+    CheckBox(h2,v+=16,0,"Iekļaut nosūt. Nr.",flags[22]);
+  end;
+//  CheckBox(h2,v+=16,0,"Include History Before Stocktake",flags[19]);
+  ButtonFrame(h2,vm=(v+=38),130,2,"Rādīt");
+  RadioButton(h2,v,0,0,"Pārskatu",flags[9]);
+  RadioButton(h2,v+=16,1,0,"Detalizēti",flags[9]);
+  if (IsEnterprise) then begin
+  ButtonFrame(h2,v+=40,130,2,"Secība pēc");
+  RadioButton(h2,v,0,0,"Izm. datuma",flags[10]);
+  RadioButton(h2,v+=16,1,0,"Gr. datuma",flags[10]);
+  end;
+  ButtonFrame(h3,v=vm,140,3,"Veids");
+  RadioButton(h3,v,0,0,"Daudzums",ArtMode);
+  if (HasVarieties) then begin
+  RadioButton(h3,v+=16,3,0,"Daudz. un variācijas",ArtMode);
+  end;
+  RadioButton(h3,v+=16,1,0,"Daudz. un summas",ArtMode); // 2 Has some code for it, don't know what....
+  EndFrame;
+  if (HasSecondQuantity) then begin
+  ButtonFrame(h4,v=vm,150,3,"Otrā daudzuma vienība");//  CheckBox(20,v+=16,0,"Show Quantity 2",flags[12]);
+  RadioButton(h4,v,0,0,"Nerādīt",flags[12]);
+  RadioButton(h4,v+=16,1,0,"Rādīt",flags[12]);
+  RadioButton(h4,v+=16,2,0,"Rādīt koeficientu",flags[12]);
+    ButtonFrame(h4,v=30,160,12,"Reģistri");
+  end else begin
+    ButtonFrame(h4,v=vm,160,12,"Reģistri");
+  end;
+  if (HasModSO) then begin
+    CheckBox(h4,v,0,"Nosūtīšanas",flags[2]); v = v + 16;
+  end;
+  CheckBox(h4,v,0,"Preču saņemšanas",flags[3]); v = v + 16;
+    CheckBox(h4,v,0,"Rēķini",flags[1]); v = v + 16;
+//  CheckBox(h4,v+=16,0,"POS Invoices",flags[16]);
+  if (HasModProd) then begin
+    if (StandardHansa==false) then begin
+    CheckBox(h4,v,0,"Ražošanas pasūtījumi",flags[18]); v = v + 16;
+    end;
+    CheckBox(h4,v,0,"Ražošanas",flags[5]); v = v + 16;
+    if (StandardHansa==false) then begin
+    CheckBox(h4,v,0,"Ražošanas darbības",flags[20]); v = v + 16;
+    end;
+  end;
+  if (HasAdvancedStock) then begin
+    CheckBox(h4,v,0,"Atgrieztās preces",flags[8]); v = v + 16;
+    CheckBox(h4,v,0,"Atgrieztās preces pieg.",flags[19]); v = v + 16;
+  end;
+  CheckBox(h4,v,0,"Preču norakstīšana",flags[6]); v = v + 16;
+  if (IsEnterprise or (HasLocalization("PRT") and HasMultiLocations)) then begin
+    CheckBox(h4,v,0,"Noliktavas kustība",flags[4]); v = v + 16;
+  end;
+  if (HasAdvancedStock) then begin
+    CheckBox(h4,v,0,"Preču pārvērtēšana",flags[22]); v = v + 16;
+  end;
+  if (HasModRent) then begin
+    CheckBox(h4,v,0,"Iekš. nol. kustība",flags[17]); v = v + 16;
+  end;
+  if (HasModSVO) then begin
+    CheckBox(h4,v,0,"Darba tabulas",flags[7]); v = v + 16;
+  end;
+  EndFrame;
+  EndWindow;
+end;
