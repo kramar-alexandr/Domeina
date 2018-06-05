@@ -1283,6 +1283,14 @@ EndFormat;
               testf = false;
           end;
         end;
+        if nonblank(RepSpec.f13) and testf then begin
+          Switch (IHr.FileName) begin
+            Case "RetPUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13);
+            Case "PUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13);
+            otherwise
+              testf = false;
+          end;
+        end;
         //EBS <--// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 18 May 2018 16:09:31
         if (foundIH==false) then begin testf = false; end;
 //StopAlert("IHr.FileName " & IHr.FileName & " IHr.TransNr " & IHr.TransNr & " IHr.Location " & IHr.Location & " foundIH " & foundIH);

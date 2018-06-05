@@ -4,6 +4,8 @@ begin
   record IVVc IVr;
   record SHVc SHr;
   record RetVc Retr;
+  record PUVc PUr;
+  record RetPUVc RetPUr;
   boolean res;
 
   if filename == "IVVc" then begin
@@ -28,6 +30,24 @@ begin
     Retr.SerNr = sernr;
     if ReadFirstMain(Retr,1,true) then begin
       if Retr.CustCode == customer then begin
+        res = true;
+      end;
+    end;
+  end;
+  
+  if filename == "RetPUVc" then begin
+    RetPUr.SerNr = sernr;
+    if ReadFirstMain(RetPUr,1,true) then begin
+      if RetPUr.VECode == customer then begin
+        res = true;
+      end;
+    end;
+  end;
+  
+  if filename == "PUVc" then begin
+    PUr.SerNr = sernr;
+    if ReadFirstMain(PUr,1,true) then begin
+      if PUr.VECode == customer then begin
         res = true;
       end;
     end;

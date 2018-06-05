@@ -1,0 +1,15 @@
+global
+procedure RetPUDClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  //newOK = false;
+  return;
+end;
+
+global
+procedure RetPULClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  //newOK = false;
+  return;
+end;

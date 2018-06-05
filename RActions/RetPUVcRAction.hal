@@ -1,0 +1,34 @@
+
+
+global
+updating function LongInt RetPUVcRecordCheck(var record RetPUVc RetPUp,record RetPUVc RetPU2p,LongInt stat,LongInt check)
+BEGIN
+  LongInt res,error;
+  Boolean UnOKedCheckSerialf;
+  string 255 errorstr,fieldstr;
+  integer rownr;
+  
+  res = 0;
+  
+  if(res==0)then begin
+		if(blank(RetPUp.VECode))then begin
+			res = -1;
+			RecordCheckError(1058,"",-1,"VECode");   
+			goto lRetPUVcRecordCheck;
+		end;
+		if(blank(RetPUp.Location))then begin
+			res = -1;
+			RecordCheckError(1058,"",-1,"Location");  
+			goto lRetPUVcRecordCheck; 
+		end;
+	end;
+	
+  res = inner.RetPUVcRecordCheck(RetPUp,RetPU2p,stat,check);
+	
+	
+	
+lRetPUVcRecordCheck:;
+	
+  RetPUVcRecordCheck = res;
+  RETURN;
+END;

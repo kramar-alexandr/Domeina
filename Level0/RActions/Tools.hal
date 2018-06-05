@@ -1,0 +1,236 @@
+external procedure VIAddDownpaymentRows(record POVc,var record VIVc);
+external function Boolean HasApprovals();
+remote function Integer PUApprovalStatus(record PUVc,var record AcceptanceRulesVc);
+external function Boolean BulkSerialNos_CalculateQuantityAndSerialNr(record SerNrTrackBlock,Boolean,string,var string,var val);
+external function Boolean PUDchrsum(record PUVc,Integer);
+external function string 255 FillupTaxMatrix(Integer,string,string,string,string,string,var record TaxMatrixVc);
+external function Boolean GetItemPurchasePriceDiscount(string,string,Date,string,string,val,string,string,string,string,Integer,Boolean,val,val,val,val,val,
+         var record INVc,var record PIVc,var Boolean,var val,var string,var val,var string,var string,var Boolean,var string);
+external function Boolean SerialNrEverinStock(string,string);
+external function Integer SerBlockCheckOverlap(LongInt,LongInt,LongInt,LongInt);
+external procedure RowCalculateTaxMatrix_VIVc(var record VIVc,Integer,row VIVc,Integer);
+external function Boolean CalculateOPPrepaymentAvgRate(record PUVc,LongInt,val,var val,var val,var val,var val,var val);
+external function roundmode GetCostRoundMode(record RoundBlock);
+external function roundmode DefaultRoundMode();
+external function Integer ValidatePORecord(var record POVc,record POVc,LongInt,LongInt,Boolean,var string);
+external procedure DivPIFactor(val,val,var val);
+external procedure RoundVATSum(string,string,string,var val);
+external function string 255 FindINObjects(string,string);
+external procedure PURecalcCost(var record PUVc);
+external procedure PUSetShipCost(var record PUVc,Integer);
+external function Integer GetPUPControlAcc(string,string,Integer,string,string,record AccBlock,Integer,var string,var string,Boolean);
+external function Integer GetPUStockAcc(Integer,string,string,string,record AccBlock,Integer,var string,var string,Boolean);
+external procedure NextM4Number(string,var string);
+external procedure M4PadString(string,Integer,string,Boolean,var string);
+external function string 20 FindFreePositionInLocArea_ExcludePositionFromArray(string,string,val,record INVc,Integer,Array string,Integer);
+external procedure CalculatePURowSum(val,val,string,var val,val,
+                                     val,val,val,val,val,
+                                     string,var val,Boolean,string,
+                                     val,val,val,val,val);
+external function Boolean GetFirstItem(var string,var record INVc);
+external function Integer GetPO(LongInt,var record POVc,string,Boolean);
+external function val DivRateToBase1(string,val,val,val,val,val,val,roundmode);
+external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
+external function val FindVAT(string,val,Integer,Integer);
+external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
+external procedure GetAPAcc(string,var string);
+external function Boolean FindItemVAR(string,var string,var string,var string,var string);
+external function Boolean GetFirstPurchaseItem(string,string,string,var record PIVc);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external procedure PUCalcPerc(val,string,var val);
+external procedure PUSumUp(var record PUVc);
+external procedure PUCalcCostPrice(string,val,Integer,Integer,string,string,
+                                   val,val,val,val,val,
+                                   val,val,val,val,val,val,
+                                   string,var val,val,var val,string,Integer);
+external procedure ReadLastINSer(string,var string);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external procedure GetItemVATCode(string,Integer,var string,Boolean);
+external function Boolean GetAccName(string,var string,Integer);
+external procedure GetPurchaseControlAcc(string,Integer,string,record AccBlock,string,var string,string);
+external procedure MulM4ProcVal(val,val,var val);
+external procedure VISumup(record VIVc,var val);
+external procedure VICalcVals(var record VIVc);
+external procedure VICalcEReb(var record VIVc);
+external procedure AddExtraCostRow(record AccBlock,record BaseCurBlock,record VIVc,string,val,Integer,Integer,Integer,string,var record SMVc,Integer);
+external function Boolean VIVc_PasteVECode(var record VIVc,Integer,Boolean,Boolean,var string);
+
+external procedure FindPUStockAcc(string,record CostAccBlock,string,string,string,record INVc,Integer,var string,var string,Boolean);
+external procedure RetPUSumUp(var record RetPUVc);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+
+
+global procedure RA_RetPUDClassVECodeEFAfter(var record RetPUVc RetPUp)
+begin
+  row RetPUVc RetPUrw;
+  Integer i,rwcnt,retrw;
+  record MainStockBlock MSb;
+  record RetGoodsBlock RGb;  
+  record CostAccBlock CAb;  
+  record AccBlock ARb;  
+  Boolean testf;
+  record INVc INr;
+  record CUVc VEr;
+  record ItemHistVc IHr;
+  record ItemStatusVc ISr;
+  val q;
+  record BaseCurBlock BCb;
+  val frrate,to1,to2,br1,br2;
+
+	BlockLoad(MSb);    
+  BlockLoad(RGb);
+  BlockLoad(CAb);
+  BlockLoad(ARb);
+  BlockLoad(BCb);
+  
+  RetPUp.Type = RGb.ReduceDefault;
+  RetPUp.UpdStockFlag = 1;  
+  RetPUp.OKFlag = 0;
+  RetPUp.InclVAT = 0;
+  RetPUp.TransDate = currentdate;
+
+  RetPUp.CurncyCode = BCb.BaseCur1;
+	GetFullCurncyRate(VEr.VECurncyCode,RetPUp.TransDate,frrate,to1,to2,br1,br2);
+	RetPUp.FrRate = frrate;
+	RetPUp.ToRateB1 = to1;
+	RetPUp.ToRateB2 = to2;
+	RetPUp.BaseRate1 = br1;
+	RetPUp.BaseRate2 = br2;
+	VEr.Code = RetPUp.VECode;
+  if (ReadFirstMain(VEr,1,true)) then begin end;
+  RetPUp.DelAddr0 = VEr.DelAddr0;
+  RetPUp.DelAddr1 = VEr.DelAddr1;
+  RetPUp.DelAddr2 = VEr.DelAddr2;
+  RetPUp.DelAddr3 = VEr.DelAddr3;
+  RetPUp.DelAddr4 = VEr.DelAddr4;
+  if(nonblank(VEr.VECurncyCode))then begin
+  	RetPUp.CurncyCode = VEr.VECurncyCode;
+  	GetFullCurncyRate(VEr.VECurncyCode,RetPUp.TransDate,frrate,to1,to2,br1,br2);
+		RetPUp.FrRate = frrate;
+		RetPUp.ToRateB1 = to1;
+		RetPUp.ToRateB2 = to2;
+		RetPUp.BaseRate1 = br1;
+		RetPUp.BaseRate2 = br2;
+  end;
+	
+return;
+end;
+
+
+global function Boolean RetPUVc_PasteArtCode(var record RetPUVc RetPUr,Integer rownr,var string warning,var string inwarn)
+begin
+	Boolean res;
+  record CostAccBlock CAb;
+  record PIVc PIr;
+  record INVc INr;
+  row RetPUVc RetPUrw;
+  Boolean chsum,chrsum;
+  string 60 sz,msk,mskrep,pcstr,tstr;
+  val t,p,s,t2;
+  record SysFormatBlock SFb;
+  string 200 varsubset,location;
+  Boolean infoundf;
+  record RoundBlock Roundb;
+  string 20 stockacc,purchacc;
+  record LocationVc Locr;
+  record MainStockBlock MSb;
+  Boolean nomoreremotecalls,pifound;
+  string 255 taxtemplatecode,vatcode,descstr;
+  val price,reb;
+  record CUVc VEr;
+    
+  MatRowGet(RetPUr,rownr,RetPUrw); 
+  
+  infoundf = GetItemPurchasePriceDiscount(RetPUr.VECode,RetPUr.Location,RetPUr.TransDate,RetPUr.CurncyCode,RetPUrw.ArtCode,RetPUrw.Quant,
+                                   RetPUr.Location,"","","",0,true,
+                                   RetPUr.FrRate,RetPUr.ToRateB1,RetPUr.ToRateB2,RetPUr.BaseRate1,RetPUr.BaseRate2,
+                                   INr,PIr,pifound,price,descstr,reb,vatcode,purchacc,nomoreremotecalls,taxtemplatecode);
+                                   
+  if (infoundf) then begin
+    BlockLoad(SFb);
+    BlockLoad(CAb);    
+    BlockLoad(Roundb);    
+    BlockLoad(MSb);
+    Locr.Code = RetPUr.Location;
+    if (blank(Locr.Code)) then begin
+      Locr.Code = MSb.MainStock;
+    end;
+    ReadFirstMain(Locr,1,true);
+
+    if (nonblank(INr.WarnText1)) then begin
+      inwarn = INr.WarnText1;
+    end;
+    if (INr.ItemType!=kItemTypeStocked) then begin
+      warning = USetStr(1301);
+    end;
+    pcstr = "";
+    if (GetFirstPurchaseItem(RetPUrw.ArtCode,RetPUr.Location,RetPUr.VECode,PIr)) then begin         
+      RetPUrw.CustomsCost = PIr.PurchaseCost;
+      RetPUrw.VEItemCode = PIr.VEItemCode;
+      if (INr.PriceFactor!=0) then begin
+        p = p/INr.PriceFactor;
+      end;
+    end else begin
+      RetPUrw.Spec = INr.Name;
+      p = INr.InPrice;
+      if (INr.PriceFactor!=0) then begin
+        p = p/INr.PriceFactor;
+      end;
+      p = DivRateToBase1(RetPUr.CurncyCode,p,RetPUr.FrRate,RetPUr.ToRateB1,RetPUr.ToRateB2,RetPUr.BaseRate1,RetPUr.BaseRate2,GetCostRoundMode(Roundb));
+    end; 
+    VEr.Code = RetPUr.VECode;
+  	if (ReadFirstMain(VEr,1,true)) then begin end;
+    RetPUrw.VATCode = VEr.VEVATCode;    
+    if (blank(RetPUrw.VATCode)) then begin
+      GetItemVATCode(RetPUrw.ArtCode,RetPUr.ExportFlag,tstr,false);
+      RetPUrw.VATCode = tstr;
+    end;
+    RetPUrw.Coefficient = INr.UnitCoefficient;
+    RetPUrw.ArtCode = INr.Code;
+    RetPUrw.Spec = INr.Name;
+    RetPUrw.Objects = FindINObjects(INr.Objects,INr.Group);
+    RetPUrw.UnitXval = INr.Width;
+    RetPUrw.UnitYval = INr.Height;
+    RetPUrw.UnitZval = INr.Depth;
+    location = RetPUrw.Location;
+    if (blank(location)) then begin
+      location = RetPUr.Location;
+    end;
+    if (Locr.RequirePos!=0) then begin
+      RetPUrw.PosCode = Locr.WHMDefPUPosCode;
+    end;
+
+    t2 = MulRateToBase1(RetPUr.CurncyCode,p,RetPUr.FrRate,RetPUr.ToRateB1,RetPUr.ToRateB2,RetPUr.BaseRate1,RetPUr.BaseRate2,GetCostRoundMode(Roundb));
+    PUCalcPerc(t2,RetPUrw.CustomsCost,t2);
+    pcstr = ValToString(t2,M45Val,SFb.thousSep,SFb.decimalPt,0);
+    RetPUrw.CustomsCost = pcstr;
+    tstr = INr.ExtraCost;
+    
+    if (blank(RetPUrw.Location)) then begin
+      FindPUStockAcc(RetPUr.VECode,CAb,RetPUrw.CostAcc,RetPUrw.CredAcc,RetPUr.Location,INr,0,stockacc,purchacc,true);
+    end else begin
+      FindPUStockAcc(RetPUr.VECode,CAb,RetPUrw.CostAcc,RetPUrw.CredAcc,RetPUrw.Location,INr,0,stockacc,purchacc,true);
+    end;
+    RetPUrw.CostAcc = stockacc;
+    RetPUrw.CredAcc = purchacc;
+
+    chrsum = true;
+    res = true;
+  end else begin
+    if (nonblank(RetPUrw.ArtCode)) then begin
+      warning = USetStr(1120) & RetPUrw.ArtCode;
+    end;
+  end;
+  if (chrsum) then begin
+    chsum = true;
+  end;
+  MatRowPut(RetPUr,rownr,RetPUrw);    
+  if (chsum) then begin
+    RetPUSumUp(RetPUr);
+  end;
+LRetPUVc_PasteArtCode:; 
+	
+	RetPUVc_PasteArtCode = true;
+	
+return;
+end;
