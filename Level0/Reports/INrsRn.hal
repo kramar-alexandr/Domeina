@@ -1521,6 +1521,11 @@ begin
   BlockLoad(CAb);
   ItemHistHeader(RepSpec);
   Gray_Divider(0,1);
+  
+  if(RepSpec.flags[29]==1)then begin
+  	RepSpec.ArtMode = 0;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 16:02:13
+  end;
+  
   switch (RepSpec.flags[15]) begin // Per Location
     case 0:
       if (frloc!=toloc) then begin
