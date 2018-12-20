@@ -23,7 +23,7 @@ external procedure HTDepartments(string,string,var string);
 external procedure HTItemHistType(Integer,Integer,Integer,Integer,Integer,Integer,var string);
 external procedure HTItemHistType2(Integer,Integer,Integer,Integer,Integer,var string);
 external procedure PrintCustName(string,string,integer);
-external outer function boolean BLT_ChcekINrsCustomer(string,longint,string);
+external outer function boolean BLT_ChcekINrsCustomer(string,longint,string,var string);
 
 procedure PrintItemTotals_Overview(record RcVc RepSpec,record INVc INr,
                                    val fwdqty,val fwdcp,val fwdtotcp,val itemqin,val itemqout,val itemcpin,val itemcpout)
@@ -1081,7 +1081,7 @@ begin
 end;
 
 procedure INrsRnRun(record RcVc RepSpec,record MainStockBlock MSb,record CostAccBlock CAb,
-                    var val SumQFwd,var val SumQIn,var val SumQOut,var val SumCPFwd,var val SumCPIn,var val SumCPOut,var val SumQ2)
+                    var val SumQFwd,var val SumQIn,var val SumQOut,var val SumCPFwd,var val SumCPIn,var val SumCPOut,var val SumQ2,array string acucodes,string curcu)
 begin
   string 20 frin,toin;
   string 20 frloc,toloc;
@@ -1096,7 +1096,10 @@ begin
   Boolean foundIH,foundIN,testf,itemheaderf,ihtestf,foundpi,itemhistf;
   val itemqin,itemq2in,itemqout,bal,itemcpin,itemcpout,itemq2out;
   val fwdqty,fwdqty2,fwdcp,fwdtotcp;
-
+  string 100 cucode;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 15:04:33
+	boolean foundf;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 15:04:42
+	integer i;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 15:04:46
+	
   sorting = RepSpec.flags[10];
   frin = FirstInRange(RepSpec.f1,20);
   toin = LastInRange(RepSpec.f1,20);
@@ -1276,21 +1279,60 @@ EndFormat;
         //EBS -->// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 18 May 2018 16:09:30
         if nonblank(RepSpec.f12) and testf then begin
           Switch (IHr.FileName) begin
-            Case "IVVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12);
-            Case "SHVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12);
-            Case "RetVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12);
+            Case "IVVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
+            Case "SHVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
+            Case "RetVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
             otherwise
               testf = false;
           end;
         end;
         if nonblank(RepSpec.f13) and testf then begin
           Switch (IHr.FileName) begin
-            Case "RetPUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13);
-            Case "PUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13);
+            Case "RetPUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13,cucode);
+            Case "PUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13,cucode);
             otherwise
               testf = false;
           end;
         end;
+        // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 20 December 2018 15:07:05
+        if(testf)then begin
+					if(blank(curcu))then begin
+						Switch (IHr.FileName) begin
+							Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+							Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+						end;
+						foundf = false;
+						For(i=0;i<acucodes.length;i=i+1) begin
+							if(acucodes[i]==cucode)then begin
+								foundf = true;
+							end;
+						end; 
+						if(foundf==false)then begin
+							acucodes[acucodes.length] = cucode;
+						end;
+					end else begin
+						Switch (IHr.FileName) begin
+							Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+							Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+						end;
+						if(cucode!=curcu)then begin
+							testf = false;
+						end;
+					end;
+        end;
+        if(blank(curcu) and RepSpec.flags[29]==1)then begin
+        	testf = false;
+        end;
+        
+	// Edit End ---------------------------------------------- Edit End
+	
         //EBS <--// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 18 May 2018 16:09:31
         if (foundIH==false) then begin testf = false; end;
 //StopAlert("IHr.FileName " & IHr.FileName & " IHr.TransNr " & IHr.TransNr & " IHr.Location " & IHr.Location & " foundIH " & foundIH);
@@ -1468,7 +1510,11 @@ begin
   val SumQIn,SumQOut,SumQFwd,SumCPIn,SumCPOut,SumCPFwd,SumQ2;
   val bal;
   val LocSumQIn,LocSumQOut,LocSumQFwd,LocSumCPIn,LocSumCPOut,LocSumCPFwd,LocSumQ2;
-
+  array string 100 acucodes;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 14:56:39
+  integer i;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 15:46:57
+  string 100 curcu;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 15:46:54
+	record CUVc CUr;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 15:46:52
+		
   frloc = FirstInRange(RepSpec.f6,20);
   toloc = LastInRange(RepSpec.f6,20);
   BlockLoad(MSb);
@@ -1484,8 +1530,34 @@ begin
         goto LINrsRn;
       end;
       RepSpec.TransStr = frloc;
-      INrsRnRun(RepSpec,MSb,CAb,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
-      PrintReportTotals(RepSpec,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
+      if(RepSpec.flags[29]==0 or nonblank(RepSpec.f12) or nonblank(RepSpec.f13))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 14:21:26
+				INrsRnRun(RepSpec,MSb,CAb,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2,acucodes,"");// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 14:56:53
+				PrintReportTotals(RepSpec,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
+      end else begin
+      	INrsRnRun(RepSpec,MSb,CAb,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2,acucodes,"");
+      	PrintReportTotals(RepSpec,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
+
+      	if(acucodes.length>0)then begin
+      		For(i=0;i<acucodes.length;i=i+1) begin
+      			startformat(15);
+      				outstring(0,"DblCUVc",acucodes[i],false);
+      				CUr.Code = acucodes[i];
+      				readfirstmain(CUr,1,true);
+      				outstring(100,0,CUr.Name,false);
+      			endformat;
+      			SumQFwd = blankval;
+      			SumQIn = blankval;
+      			SumQOut = blankval;
+      			SumCPFwd = blankval;
+      			SumCPIn = blankval;
+      			SumCPOut = blankval;
+      			SumQ2 = blankval;
+	  				INrsRnRun(RepSpec,MSb,CAb,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2,acucodes,acucodes[i]);
+						PrintReportTotals(RepSpec,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
+					end; 
+					black_divider(0,1);
+      	end;
+      end;
     case 1:
       found = true;
       Locr.Code = frloc;
@@ -1508,7 +1580,7 @@ begin
           SetSumBlankVals(LocSumQFwd,LocSumCPFwd,LocSumQIn,LocSumQOut,LocSumCPIn,LocSumCPOut,LocSumQ2);
           PrintLocation(Locr);
           RepSpec.TransStr = Locr.Code;
-          INrsRnRun(RepSpec,MSb,CAb,LocSumQFwd,LocSumQIn,LocSumQOut,LocSumCPFwd,LocSumCPIn,LocSumCPOut,LocSumQ2);
+          INrsRnRun(RepSpec,MSb,CAb,LocSumQFwd,LocSumQIn,LocSumQOut,LocSumCPFwd,LocSumCPIn,LocSumCPOut,LocSumQ2,acucodes,"");
           PrintLocationTotals(RepSpec,Locr.Code,LocSumQFwd,LocSumCPFwd,LocSumQIn,LocSumQOut,LocSumCPIn,LocSumCPOut,LocSumQ2);
           SumTotals(LocSumQFwd,LocSumCPFwd,LocSumQIn,LocSumQOut,LocSumCPIn,LocSumCPOut,LocSumQ2,SumQFwd,SumCPFwd,SumQIn,SumQOut,SumCPIn,SumCPOut,SumQ2);
         end;

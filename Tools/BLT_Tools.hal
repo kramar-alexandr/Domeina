@@ -1,5 +1,5 @@
 global
-function boolean BLT_ChcekINrsCustomer(string filename, longint sernr, string customer)
+function boolean BLT_ChcekINrsCustomer(string filename, longint sernr, string customer,var string cucode)
 begin
   record IVVc IVr;
   record SHVc SHr;
@@ -7,10 +7,13 @@ begin
   record PUVc PUr;
   record RetPUVc RetPUr;
   boolean res;
-
+	
+	cucode = "";
+	
   if filename == "IVVc" then begin
     IVr.SerNr = sernr;
     if ReadFirstMain(IVr,1,true) then begin
+    	cucode = IVr.CustCode;
       if IVr.CustCode == customer then begin
         res = true;
       end;
@@ -20,6 +23,7 @@ begin
   if filename == "SHVc" then begin
     SHr.SerNr = sernr;
     if ReadFirstMain(SHr,1,true) then begin
+    	cucode = SHr.CustCode;
       if SHr.CustCode == customer then begin
         res = true;
       end;
@@ -29,6 +33,7 @@ begin
   if filename == "RetVc" then begin
     Retr.SerNr = sernr;
     if ReadFirstMain(Retr,1,true) then begin
+      cucode = Retr.CustCode;
       if Retr.CustCode == customer then begin
         res = true;
       end;
@@ -38,6 +43,7 @@ begin
   if filename == "RetPUVc" then begin
     RetPUr.SerNr = sernr;
     if ReadFirstMain(RetPUr,1,true) then begin
+      cucode = RetPUr.VECode;
       if RetPUr.VECode == customer then begin
         res = true;
       end;
@@ -47,6 +53,7 @@ begin
   if filename == "PUVc" then begin
     PUr.SerNr = sernr;
     if ReadFirstMain(PUr,1,true) then begin
+      cucode = PUr.VECode;
       if PUr.VECode == customer then begin
         res = true;
       end;

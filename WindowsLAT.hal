@@ -124,6 +124,7 @@ begin
   if (HasLocalization("ARG,MEX,USA") and IsStandardProduct==false) then begin
     CheckBox(h2,v+=16,0,"Iekļaut nosūt. Nr.",flags[22]);
   end;
+  CheckBox(h2,v+=16,0,"Per Contact",flags[29]);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 18 December 2018 11:35:38
 //  CheckBox(h2,v+=16,0,"Include History Before Stocktake",flags[19]);
   ButtonFrame(h2,vm=(v+=38),130,2,"Rādīt");
   RadioButton(h2,v,0,0,"Pārskatu",flags[9]);
