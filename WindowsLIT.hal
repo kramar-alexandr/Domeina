@@ -108,8 +108,8 @@ begin
   if (HasModPO) then begin
   EditFieldTL(h,v+=vs,150,"Pagr. tiekėjas",M4UStr,Normal,10,f2,false,VESClass);
   end;
-  EditFieldTL(h,v+=vs ,150,"Pirkėjas",M4UStr,Normal,50,f12,false,CUSClass);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 1 June 2018 09:58:01
-  EditFieldTL(h,v+=vs ,150,"Tiekėjas",M4UStr,Normal,50,f13,false,VESClass);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 1 June 2018 09:58:02
+  EditFieldTL(h,v+=vs ,150,"Pirk./Tiek.",M4UStr,Normal,50,f12,false,AllCUSClass);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 1 June 2018 09:58:01
+  //EditFieldTL(h,v+=vs ,150,"Tiekėjas",M4UStr,Normal,50,f13,false,VESClass);// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 1 June 2018 09:58:02
   if (IsEnterprise) then begin
   CheckBox(h2,v+=26,0,"Tik sandėliuojamos prekės",flags[11]);
 //  CheckBox(h2,v+=16,0,"Show Quantity 2",flags[12]);
@@ -184,6 +184,11 @@ begin
     CheckBox(h4,v,0,"Darbo kortelės",flags[7]); v = v + 16;
   end;
   EndFrame;
+  
+  ButtonFrame(h4,vm=(v+=38),130,2,"Peržiūra");// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 15 January 2019 10:57:39
+  RadioButton(h4,v,0,0,"Pagal pirkėją",flags[28]);
+  RadioButton(h4,v+=16,1,0,"Pagal tiekėją",flags[28]);
+  
   EndWindow;
 end;
 
