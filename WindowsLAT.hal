@@ -183,10 +183,5 @@ begin
     CheckBox(h4,v,0,"Darba tabulas",flags[7]); v = v + 16;
   end;
   EndFrame;
-  
-  ButtonFrame(h4,vm=(v+=38),130,2,"Owerview");// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 15 January 2019 10:57:39
-  RadioButton(h4,v,0,0,"Per Customer",flags[28]);
-  RadioButton(h4,v+=16,1,0,"Per Supplier",flags[28]);
-  
   EndWindow;
 end;

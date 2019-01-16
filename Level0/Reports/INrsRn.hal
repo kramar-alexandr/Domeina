@@ -1277,7 +1277,7 @@ EndFormat;
           end;
         end;
         //EBS -->// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 18 May 2018 16:09:30
-        if (nonblank(RepSpec.f12) and RepSpec.flags[28]==0) and testf then begin
+        if nonblank(RepSpec.f12) and testf then begin
           Switch (IHr.FileName) begin
             Case "IVVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
             Case "SHVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
@@ -1286,10 +1286,10 @@ EndFormat;
               testf = false;
           end;
         end;
-        if (nonblank(RepSpec.f12) and RepSpec.flags[28]==1) and testf then begin
+        if nonblank(RepSpec.f13) and testf then begin
           Switch (IHr.FileName) begin
-            Case "RetPUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
-            Case "PUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f12,cucode);
+            Case "RetPUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13,cucode);
+            Case "PUVc": testf = BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr, RepSpec.f13,cucode);
             otherwise
               testf = false;
           end;
@@ -1298,17 +1298,12 @@ EndFormat;
 	//Thursday, 20 December 2018 15:07:05
         if(testf)then begin
 					if(blank(curcu))then begin
-						if(RepSpec.flags[28]==0)then begin
-							Switch (IHr.FileName) begin
-								Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-								Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-								Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							end;
-						end else begin
-							Switch (IHr.FileName) begin
-								Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-								Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							end;
+						Switch (IHr.FileName) begin
+							Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+							Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
 						end;
 						foundf = false;
 						For(i=0;i<acucodes.length;i=i+1) begin
@@ -1320,17 +1315,12 @@ EndFormat;
 							acucodes[acucodes.length] = cucode;
 						end;
 					end else begin
-						if(RepSpec.flags[28]==0)then begin
-							Switch (IHr.FileName) begin
-								Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-								Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-								Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							end;
-						end else begin
-							Switch (IHr.FileName) begin
-								Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-								Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							end;
+						Switch (IHr.FileName) begin
+							Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+							Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
 						end;
 						if(cucode!=curcu)then begin
 							testf = false;
@@ -1545,7 +1535,7 @@ begin
         goto LINrsRn;
       end;
       RepSpec.TransStr = frloc;
-      if(RepSpec.flags[29]==0 or nonblank(RepSpec.f12))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 14:21:26
+      if(RepSpec.flags[29]==0 or nonblank(RepSpec.f12) or nonblank(RepSpec.f13))then begin// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 14:21:26
 				INrsRnRun(RepSpec,MSb,CAb,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2,acucodes,"");// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 14:56:53
 				PrintReportTotals(RepSpec,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
       end else begin
