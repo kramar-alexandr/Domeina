@@ -125,11 +125,13 @@ begin
   if (HasLocalization("ARG,MEX,USA") and IsStandardProduct==false) then begin
     CheckBox(h2,v+=16,0,"Include Dispatch Number",flags[22]);
   end;
-  CheckBox(h2,v+=16,0,"Overview per contact",flags[29]);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 18 December 2018 11:35:38
+  //CheckBox(h2,v+=16,0,"Overview per contact",flags[29]);// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 18 December 2018 11:35:38
 //  CheckBox(h2,v+=16,0,"Include History Before #Stocktaking#",flags[19]);
-  ButtonFrame(h2,vm=(v+=38),130,2,"Function");
-  RadioButton(h2,v,0,0,"Overview",flags[9]);
-  RadioButton(h2,v+=16,1,0,"Detailed",flags[9]);
+  ButtonFrame(h2-10,vm=(v+=38),140,4,"Function");// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 16 January 2019 17:09:57
+  RadioButton(h2-10,v,0,0,"Overview",flags[9]);
+  RadioButton(h2-10,v+=16,1,0,"Detailed",flags[9]);
+  RadioButton(h2-10,v+=16,2,0,"Overview by supplier",flags[9]);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 16 January 2019 17:09:55
+  RadioButton(h2-10,v+=16,3,0,"Overview by customer",flags[9]);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 16 January 2019 17:09:56
   if (IsEnterprise) then begin
     ButtonFrame(h2,v+=40,130,2,"Sorting");
     RadioButton(h2,v,0,0,"Cost Date",flags[10]);

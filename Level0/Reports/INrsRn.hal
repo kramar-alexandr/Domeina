@@ -1298,12 +1298,18 @@ EndFormat;
 	//Thursday, 20 December 2018 15:07:05
         if(testf)then begin
 					if(blank(curcu))then begin
-						Switch (IHr.FileName) begin
-							Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
-							Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+						if(RepSpec.flags[29]==2)then begin
+							Switch (IHr.FileName) begin
+								Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+								Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+							end;
+						end;
+						if(RepSpec.flags[29]==3)then begin
+							Switch (IHr.FileName) begin
+								Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+								Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+								Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							end;
 						end;
 						foundf = false;
 						For(i=0;i<acucodes.length;i=i+1) begin
@@ -1315,19 +1321,25 @@ EndFormat;
 							acucodes[acucodes.length] = cucode;
 						end;
 					end else begin
-						Switch (IHr.FileName) begin
-							Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
-							Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
-							Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+						if(RepSpec.flags[29]==2)then begin
+							Switch (IHr.FileName) begin
+								Case "RetPUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+								Case "PUVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f13,cucode);
+							end;
+						end;
+						if(RepSpec.flags[29]==3)then begin
+							Switch (IHr.FileName) begin
+								Case "IVVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+								Case "SHVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+								Case "RetVc": BLT_ChcekINrsCustomer(IHr.FileName, IHr.TransNr,RepSpec.f12,cucode);
+							end;
 						end;
 						if(cucode!=curcu)then begin
 							testf = false;
 						end;
 					end;
         end;
-        if(blank(curcu) and RepSpec.flags[29]==1)then begin
+        if(blank(curcu) and RepSpec.flags[29]>1)then begin
         	testf = false;
         end;
         
@@ -1522,7 +1534,11 @@ begin
   ItemHistHeader(RepSpec);
   Gray_Divider(0,1);
   
-  if(RepSpec.flags[29]==1)then begin
+  if(RepSpec.flags[9]>1)then begin
+  	RepSpec.flags[29] = RepSpec.flags[9];
+  end;
+  
+  if(RepSpec.flags[29]>1)then begin
   	RepSpec.flags[9] = 0;// Edit ************************** BPI Ukraine - KramarAlexandr - Thursday, 20 December 2018 16:02:13
   end;
   
