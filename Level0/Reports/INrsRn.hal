@@ -1228,6 +1228,7 @@ begin
           case 1: if (IHr.TransDate>RepSpec.sEndDate) then begin foundIH = false; end;
         end;
         testf = true;
+        if (IHr.ArtCode!=INr.Code) then begin testf = false; end;
         if (nonblank(RepSpec.TransStr)) then begin
           if (ihkeys==3) then begin
             if (RepSpec.TransStr!=IHr.Location) then begin foundIH = false; end;
@@ -1319,6 +1320,9 @@ EndFormat;
 						end; 
 						if(foundf==false)then begin
 							acucodes[acucodes.length] = cucode;
+							if(cucode=="1558")then begin
+								logtext(0,IHr.FileName & "  " & IHr.TransNr & " " & IHr.ArtCode);
+							end;
 						end;
 					end else begin
 						if(RepSpec.flags[29]==2)then begin
@@ -1557,7 +1561,7 @@ begin
       end else begin
       	INrsRnRun(RepSpec,MSb,CAb,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2,acucodes,"");
       	PrintReportTotals(RepSpec,SumQFwd,SumQIn,SumQOut,SumCPFwd,SumCPIn,SumCPOut,SumQ2);
-
+				logtext(0,"acucodes.length " & acucodes.length);
       	if(acucodes.length>0)then begin
       		For(i=0;i<acucodes.length;i=i+1) begin
       			startformat(15);
@@ -1566,6 +1570,14 @@ begin
       				readfirstmain(CUr,1,true);
       				outstring(100,0,CUr.Name,false);
       			endformat;
+      			if(RepSpec.flags[29]==2)then begin
+      				RepSpec.f13 = CUr.Code;
+      			end;
+      			if(RepSpec.flags[29]==3)then begin
+      				RepSpec.f12 = CUr.Code;
+      			end;
+      			
+      			
       			SumQFwd = blankval;
       			SumQIn = blankval;
       			SumQOut = blankval;
